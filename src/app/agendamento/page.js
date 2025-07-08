@@ -88,13 +88,22 @@ export default function FormularioAgendamento() {
         date: data.date,
         time: data.time,
         service: data.service,
-      };
+      }; 
+
+      const token = localStorage.getItem('token'); 
+      if (!token) {
+      alert("Você precisa estar logado para agendar.");
+      router.push("/login");
+      return;
+ }
 
       const response = await fetch("http://localhost:3001/appointment", {
         method: "POST",
+       
         headers: {
-          "Content-Type": "application/json",
-        },
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`, // <-- Aqui está a correção!
+     },
         body: JSON.stringify(agendamento),
       }); 
       const responseText = await response.text();

@@ -1,10 +1,13 @@
 'use client';
-import { useState } from 'react';
+import { useState } from 'react'; 
+import { useRouter } from 'next/navigation';
+import axios from 'axios';
 
 export default function SigninForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [erro, setErro] = useState('');
+  const [erro, setErro] = useState(''); 
+  const router = useRouter();
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -20,12 +23,29 @@ export default function SigninForm() {
       if (!res.ok) throw new Error('Login inválido');
 
       const data = await res.json();
+
+      const accessToken = data.accessToken;
       localStorage.setItem('token', data.accessToken);
 
       // Redirecionar para /admin (ou outra rota protegida)
-      window.location.href = '/admin';
+     const me = await axios.get('http://localhost:3001/auth/me', {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      const role = me.data.role;
+
+      // Redireciona com base na role
+      if (role === 'CLIENTE') {
+        router.push('/agendamento');
+      } else if (role === 'BARBEIRO') {
+        router.push('/admin');
+      }
+
     } catch (err) {
-      setErro(err.message);
+      alert('Erro no login');
+      console.error(err);
     }
   }
 
