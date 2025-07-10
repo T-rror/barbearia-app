@@ -8,7 +8,7 @@ export default function Hero() {
         <h1 className="text-6xl font-bebas tracking-widest">Barbearia da Neguinha</h1>
         <p className="font-poppins text-lg animate-fade-in">Seu estilo Revela sua Atitude</p>
         <a
-          href="./agendamento"
+          href="./signin"
           className="animate-fade-in bg-black text-white text-center px-6 py-3 pt-1 rounded-lg font-semibold hover:bg-blue-700 transition"
         >
           Agende seu Corte
