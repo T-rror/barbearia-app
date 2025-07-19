@@ -4,14 +4,15 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
 
-export default  function SigninForm() {
-  const [step, setStep] = useState(1); // 1: email, 2: senha
+export default function SigninForm() {
+  const [step, setStep] = useState(1); // 1: email, 2: senha e dados
   const [emailExists, setEmailExists] = useState(null);
- 
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
   const [erro, setErro] = useState('');
   const router = useRouter();
 
@@ -28,7 +29,7 @@ export default  function SigninForm() {
 
       const data = await res.json();
       setEmailExists(data.exists);
-      setStep(2); // avança para parte da senha
+      setStep(2); // avança para parte da senha/dados
     } catch (err) {
       console.error(err);
       setErro('Erro ao verificar e-mail');
@@ -40,8 +41,8 @@ export default  function SigninForm() {
     setErro('');
 
     try {
-      // Se o email já existe → login
       if (emailExists) {
+        // LOGIN
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/signin`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -53,7 +54,6 @@ export default  function SigninForm() {
         const data = await res.json();
         localStorage.setItem('token', data.accessToken);
 
-        // Verifica role
         const me = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/auth/me`, {
           headers: {
             Authorization: `Bearer ${data.accessToken}`,
@@ -63,12 +63,15 @@ export default  function SigninForm() {
         const role = me.data.role;
         if (role === 'CLIENTE') router.push('/agendamento');
         else if (role === 'BARBEIRO') router.push('/admin');
-      }
-
-      // Se o email não existe → cadastro
-      else {
+      } else {
+        // CADASTRO
         if (password !== confirmPassword) {
           setErro('As senhas não coincidem');
+          return;
+        }
+
+        if (!name || !phone) {
+          setErro('Preencha nome e telefone');
           return;
         }
 
@@ -78,7 +81,8 @@ export default  function SigninForm() {
           body: JSON.stringify({
             email,
             password,
-            name: null, // pode ser ajustado futuramente
+            name,
+            phone,
           }),
         });
 
@@ -91,12 +95,7 @@ export default  function SigninForm() {
       console.error(err);
       setErro('Erro ao enviar dados');
     }
-
-     
   };
-
- 
-
 
   return (
     <form onSubmit={step === 1 ? checkEmail : handleSubmit} className="space-y-4">
@@ -114,6 +113,30 @@ export default  function SigninForm() {
 
       {step === 2 && (
         <>
+          {/* CAMPOS DE CADASTRO */}
+          {!emailExists && (
+            <>
+              <input
+                type="text"
+                placeholder="Nome"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="w-full p-2 border rounded"
+                required
+              />
+
+              <input
+                type="tel"
+                placeholder="Telefone"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                className="w-full p-2 border rounded"
+                required
+              />
+            </>
+          )}
+
+          {/* SENHA E CONFIRMAÇÃO */}
           <input
             type="password"
             placeholder="Senha"
@@ -137,11 +160,7 @@ export default  function SigninForm() {
       )}
 
       <button type="submit" className="w-full bg-black text-white py-2 rounded">
-        {step === 1
-          ? 'Continuar'
-          : emailExists
-          ? 'Entrar'
-          : 'Criar Conta'}
+        {step === 1 ? 'Continuar' : emailExists ? 'Entrar' : 'Criar Conta'}
       </button>
 
       {step === 2 && (
@@ -152,6 +171,8 @@ export default  function SigninForm() {
             setEmailExists(null);
             setPassword('');
             setConfirmPassword('');
+            setName('');
+            setPhone('');
           }}
           className="text-sm text-gray-500"
         >

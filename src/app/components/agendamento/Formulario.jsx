@@ -13,27 +13,7 @@ export default function Formulario({
       <h1 className="text-5xl text-center text-white font-semibold py-3.5">Precisão e qualidade</h1>
       <div className="bg-black max-w-md mx-auto mt-10 p-4 border rounded-xl shadow">
         <h1 className="text-white text-center text-xl font-bold mb-4">Agende seu Corte</h1>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <input
-            {...register("name", { required: "O nome é obrigatório" })}
-            placeholder="Nome"
-            className="w-full p-2 border rounded text-center text-white bg-black"
-          />
-          {errors.name && <p className="text-red-500">{errors.name.message}</p>}
-
-          <input
-            {...register("phone", {
-              required: "O telefone é obrigatório",
-              pattern: {
-                value: /^\(?\d{2}\)?\s?\d{4,5}-?\d{4}$/,
-                message: "Formato de telefone inválido",
-              },
-            })}
-            placeholder="Telefone"
-            className="w-full p-2 border bg-black text-white"
-          />
-          {errors.phone && <p className="text-red-500">{errors.phone.message}</p>}
-
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">      
           <input
             {...register("date", { required: "A data é obrigatória" })}
             type="date"

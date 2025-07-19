@@ -70,57 +70,61 @@ export default function FormularioAgendamento() {
 };
 
 
-  const onSubmit = async (data) => {
-    try {
-      const resCheck = await fetch(
-        `http://localhost:3001/appointment/check?date=${data.date}&time=${data.time}`
-      );
-      const { exists } = await resCheck.json();
+ const onSubmit = async (data) => {
+  try {
+    console.log("Dados do formulário:", data);
 
-      if (exists) {
-        alert("Já existe um agendamento nesse horário!");
-        return;
-      }
+    
 
-      const agendamento = {
-        name: data.name,
-        phone: data.phone,
-        date: data.date,
-        time: data.time,
-        service: data.service,
-      }; 
+    const resCheck = await fetch(
+      `http://localhost:3001/appointment/check?date=${data.date}&time=${data.time}`
+    );
+    const { exists } = await resCheck.json();
 
-      const token = localStorage.getItem('token'); 
-      if (!token) {
+    if (exists) {
+      alert("Já existe um agendamento nesse horário!");
+      return;
+    }
+
+    const agendamento = {
+      date: data.date,
+      time: data.time,
+      service: data.service,
+    };
+
+    const token = localStorage.getItem("token");
+    if (!token) {
       alert("Você precisa estar logado para agendar.");
       router.push("/login");
       return;
- }
-
-      const response = await fetch("http://localhost:3001/appointment", {
-        method: "POST",
-       
-        headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`, // <-- Aqui está a correção!
-     },
-        body: JSON.stringify(agendamento),
-      }); 
-      const responseText = await response.text();
-      console.log("Resposta do backend:", responseText);
-
-      if (!response.ok) throw new Error("Erro ao enviar agendamento");
-
-      
-
-      alert("Agendamento enviado com sucesso!");
-      reset();
-      router.push("/");
-    } catch (error) {
-      console.error("Erro ao enviar agendamento:", error);
-      alert("Erro ao enviar. Verifique a conexão.");
     }
-  };
+
+    const response = await fetch("http://localhost:3001/appointment", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(agendamento),
+    });
+
+    if (!response.ok) {
+      const errorMessage = await response.text();
+      throw new Error(errorMessage || "Erro ao enviar agendamento");
+    }
+
+    const responseText = await response.text();
+    console.log("Resposta do backend:", responseText);
+
+    alert("Agendamento enviado com sucesso!");
+    reset();
+    router.push("/");
+  } catch (error) {
+    console.error("Erro ao enviar agendamento:", error);
+    alert("Erro ao enviar. Verifique a conexão.");
+  }
+};
+
 
   return (
     <Formulario
