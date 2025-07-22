@@ -1,5 +1,5 @@
-'use client';
-import { useEffect, useState } from 'react';
+"use client";
+import { useEffect, useState } from "react";
 
 export default function Header({ onLogout, user }) {
   const [horaAtual, setHoraAtual] = useState(null);
@@ -15,17 +15,19 @@ export default function Header({ onLogout, user }) {
 
   if (!mounted || !horaAtual) return null; // <- só mostra quando estiver montado no client
 
-  const diaFormatado = horaAtual.toLocaleDateString('pt-BR');
-  const horaFormatada = horaAtual.toLocaleTimeString('pt-BR');
+  const diaFormatado = horaAtual.toLocaleDateString("pt-BR");
+  const horaFormatada = horaAtual.toLocaleTimeString("pt-BR");
 
   return (
     <header className="w-full p-4 bg-gray-100 border-b flex justify-between items-center">
       <div>
         <h2 className="text-lg font-semibold">
-          Bem-vindo{user?.name ? `, ${user.name}` : ''}
+          Bem-vindo{user?.name ? `, ${user.name}` : ""}
         </h2>
 
-        <p>{diaFormatado} - {horaFormatada}</p>
+        <p>
+          {diaFormatado} - {horaFormatada}
+        </p>
       </div>
       <button
         onClick={onLogout}

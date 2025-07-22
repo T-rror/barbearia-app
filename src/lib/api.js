@@ -1,18 +1,18 @@
 // GET: buscar agendamentos
 export async function fetchAgendamentos(token) {
-  const res = await fetch('http://localhost:3001/appointment', {
+  const res = await fetch("http://localhost:3001/appointment", {
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
   });
 
-  if (!res.ok) throw new Error('Erro ao buscar agendamentos');
+  if (!res.ok) throw new Error("Erro ao buscar agendamentos");
 
   const data = await res.json();
 
-  const concluidos = data.filter(a => a.concluido === true);
-  const pendentes = data.filter(a => !a.concluido);
+  const concluidos = data.filter((a) => a.concluido === true);
+  const pendentes = data.filter((a) => !a.concluido);
   const historico = agruparPorData(data);
 
   return { pendentes, concluidos, historico };
@@ -28,7 +28,7 @@ export async function concluirAgendamento(id, token) {
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",
-      "Authorization": `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
   });
 
@@ -47,7 +47,7 @@ function agruparPorData(agendamentos) {
   agendamentos.forEach(({ date }) => {
     const dataObj = new Date(date);
     if (isNaN(dataObj)) return; // evita datas inválidas
-    const dia = dataObj.toLocaleDateString('pt-BR');
+    const dia = dataObj.toLocaleDateString("pt-BR");
     resultado[dia] = (resultado[dia] || 0) + 1;
   });
   return resultado;

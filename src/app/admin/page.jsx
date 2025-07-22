@@ -1,13 +1,12 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { fetchAgendamentos, concluirAgendamento } from '../../lib/api';
-import AgendamentoCard from '../components/admin/AgendamentoCard';
-import ConcluidoCard from '../components/admin/ConcluidoCard';
-import HistoricoResumo from '../components/admin/HistoricoResumo';
-import SidebarFiltro from '../components/admin/SidebarFiltro';
-import Header from '../components/admin/Header';
-
+import { useEffect, useState } from "react";
+import { fetchAgendamentos, concluirAgendamento } from "../../lib/api";
+import AgendamentoCard from "../components/admin/AgendamentoCard";
+import ConcluidoCard from "../components/admin/ConcluidoCard";
+import HistoricoResumo from "../components/admin/HistoricoResumo";
+import SidebarFiltro from "../components/admin/SidebarFiltro";
+import Header from "../components/admin/Header";
 
 export default function AdminPage() {
   const [agendamentos, setAgendamentos] = useState([]);
@@ -15,12 +14,11 @@ export default function AdminPage() {
   const [historico, setHistorico] = useState({});
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [filtro, setFiltro] = useState('pendentes');
-
+  const [filtro, setFiltro] = useState("pendentes");
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (!token) return (window.location.href = '/signin');
+    const token = localStorage.getItem("token");
+    if (!token) return (window.location.href = "/signin");
     setUser({ token });
     setLoading(true);
 
@@ -30,32 +28,34 @@ export default function AdminPage() {
         setAgendamentosConcluidos(concluidos);
         setHistorico(historico);
       })
-      .catch(err => console.error(err))
+      .catch((err) => console.error(err))
       .finally(() => setLoading(false));
   }, []);
 
   const handleConcluir = async (id) => {
     try {
       await concluirAgendamento(id, user.token);
-      const { pendentes, concluidos, historico } = await fetchAgendamentos(user.token);
+      const { pendentes, concluidos, historico } = await fetchAgendamentos(
+        user.token
+      );
       setAgendamentos(pendentes);
       setAgendamentosConcluidos(concluidos);
       setHistorico(historico);
     } catch (error) {
       console.error(error);
-      alert('Erro ao concluir agendamento');
+      alert("Erro ao concluir agendamento");
     }
   };
 
-   const handleLogout = () => {
-    localStorage.removeItem('token');
-    window.location.href = '/signin';
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    window.location.href = "/signin";
   };
 
-  console.log('Usuário logado:', user);
+  console.log("Usuário logado:", user);
 
   return (
-       <div className="h-screen flex flex-col">
+    <div className="h-screen flex flex-col">
       <Header onLogout={handleLogout} user={user} />
       <div className="flex flex-1">
         <SidebarFiltro filtro={filtro} setFiltro={setFiltro} />
@@ -67,16 +67,20 @@ export default function AdminPage() {
 
           {!loading && (
             <>
-              {filtro === 'pendentes' && (
+              {filtro === "pendentes" && (
                 <>
                   <h2 className="text-xl">Agendamentos Pendentes</h2>
                   {agendamentos.map((a) => (
-                    <AgendamentoCard key={a.id} agendamento={a} onConcluir={handleConcluir} />
+                    <AgendamentoCard
+                      key={a.id}
+                      agendamento={a}
+                      onConcluir={handleConcluir}
+                    />
                   ))}
                 </>
               )}
 
-              {filtro === 'concluidos' && (
+              {filtro === "concluidos" && (
                 <>
                   <h2 className="text-xl">Concluídos Recentes</h2>
                   {agendamentosConcluidos.map((a) => (
