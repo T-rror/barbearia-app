@@ -1,6 +1,6 @@
 // GET: buscar agendamentos
 export async function fetchAgendamentos(token) {
-  const res = await fetch("http://localhost:3001/appointment", {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/appointment`, {
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
@@ -24,7 +24,7 @@ export async function concluirAgendamento(id, token) {
     throw new Error("Token não encontrado. Faça login novamente.");
   }
 
-  const res = await fetch(`http://localhost:3001/appointment/${id}/concluir`, {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/appointment/${id}/concluir`, {
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",
