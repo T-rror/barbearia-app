@@ -37,65 +37,75 @@ export default function SigninForm() {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setErro('');
+  e.preventDefault();
+  setErro('');
 
-    try {
-      if (emailExists) {
-        // LOGIN
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/signin`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, password }),
-        });
+  try {
+    let accessToken;
 
-        if (!res.ok) throw new Error('Login inválido');
+    if (emailExists) {
+      // LOGIN
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/signin`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
 
-        const data = await res.json();
-        localStorage.setItem('token', data.accessToken);
+      if (!res.ok) throw new Error('Login inválido');
 
-        const me = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/auth/me`, {
-          headers: {
-            Authorization: `Bearer ${data.accessToken}`,
-          },
-        });
-
-        const role = me.data.role;
-        if (role === 'CLIENTE') router.push('/agendamento');
-        else if (role === 'BARBEIRO') router.push('/admin');
-      } else {
-        // CADASTRO
-        if (password !== confirmPassword) {
-          setErro('As senhas não coincidem');
-          return;
-        }
-
-        if (!name || !phone) {
-          setErro('Preencha nome e telefone');
-          return;
-        }
-
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/signup`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            email,
-            password,
-            name,
-            phone,
-          }),
-        });
-
-        if (!res.ok) throw new Error('Erro ao criar conta');
-
-        alert('Conta criada com sucesso! Agora é só fazer o agendamento.');
-        router.push('/agendamento');
+      const data = await res.json();
+      accessToken = data.accessToken;
+    } else {
+      // CADASTRO
+      if (password !== confirmPassword) {
+        setErro('As senhas não coincidem');
+        return;
       }
-    } catch (err) {
-      console.error(err);
-      setErro('Erro ao enviar dados');
+
+      if (!name || !phone) {
+        setErro('Preencha nome e telefone');
+        return;
+      }
+
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/signup`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password, name, phone }),
+      });
+
+      if (!res.ok) throw new Error('Erro ao criar conta');
+
+      // LOGIN automático após cadastro
+      const loginRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/signin`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+
+      if (!loginRes.ok) throw new Error('Erro ao fazer login automático');
+      const loginData = await loginRes.json();
+      accessToken = loginData.accessToken;
     }
-  };
+
+    // Armazena o token e busca o perfil
+    localStorage.setItem('token', accessToken);
+
+    const me = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/auth/me`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    const role = me.data.role;
+    if (role === 'CLIENTE') router.push('/agendamento');
+    else if (role === 'BARBEIRO') router.push('/admin');
+
+  } catch (err) {
+    console.error(err);
+    setErro('Erro ao enviar dados');
+  }
+};
+
 
   return (
     <form onSubmit={step === 1 ? checkEmail : handleSubmit} className="space-y-4">

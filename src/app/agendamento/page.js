@@ -127,6 +127,8 @@ export default function FormularioAgendamento() {
 
 
   return (
+  
+      
     <Formulario
       onSubmit={onSubmit}
       register={register}
@@ -135,5 +137,6 @@ export default function FormularioAgendamento() {
       verificarHorariosDisponiveis={verificarHorariosDisponiveis}
       horariosDisponiveis={horariosDisponiveis}
     />
+    
   );
 }

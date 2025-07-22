@@ -9,7 +9,7 @@ export default function Formulario({
   horariosDisponiveis,
 }) {
   return (
-    <section>
+    <section className="max-w-2xl mx-auto p-6 bg-black rounded-lg shadow-md">
       <h1 className="text-5xl text-center text-white font-semibold py-3.5">Precisão e qualidade</h1>
       <div className="bg-black max-w-md mx-auto mt-10 p-4 border rounded-xl shadow">
         <h1 className="text-white text-center text-xl font-bold mb-4">Agende seu Corte</h1>
