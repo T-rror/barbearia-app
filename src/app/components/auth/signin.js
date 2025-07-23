@@ -53,7 +53,9 @@ export default function SigninForm() {
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
+            credentials: 'include', 
             body: JSON.stringify({ email, password }),
+
           }
         );
 
@@ -78,6 +80,7 @@ export default function SigninForm() {
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
+            credentials: 'include', 
             body: JSON.stringify({ email, password, name, phone }),
           }
         );
@@ -90,6 +93,7 @@ export default function SigninForm() {
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
+            credentials: 'include', 
             body: JSON.stringify({ email, password }),
           }
         );
