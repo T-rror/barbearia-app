@@ -32,7 +32,7 @@ export default function FormularioAgendamento() {
   const verificarHorariosDisponiveis = async (dataSelecionada) => {
   try {
     const response = await fetch(
-      `https://barbearia-api-production.up.railway.app/appointment/by-date/${dataSelecionada}`
+      `${process.env.NEXT_PUBLIC_API_URL}/appointment/by-date/${dataSelecionada}`
     );
     const data = await response.json();
     const agendamentos = Array.isArray(data) ? data : data.agendamentos ?? [];
@@ -77,7 +77,7 @@ export default function FormularioAgendamento() {
     
 
     const resCheck = await fetch(
-      `https://barbearia-api-production.up.railway.app/appointment/check?date=${data.date}&time=${data.time}`
+      `${process.env.NEXT_PUBLIC_API_URL}/appointment/check?date=${data.date}&time=${data.time}`
     );
     const { exists } = await resCheck.json();
 
@@ -99,7 +99,7 @@ export default function FormularioAgendamento() {
       return;
     }
 
-    const response = await fetch("https://barbearia-api-production.up.railway.app/appointment", {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/appointment`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
