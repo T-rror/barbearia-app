@@ -30,6 +30,8 @@ export default function SigninForm() {
         }
       );
 
+      if (!res.ok) throw new Error("Erro ao verificar e-mail");
+
       const data = await res.json();
       setEmailExists(data.exists);
       setStep(2); // avança para parte da senha/dados
@@ -37,7 +39,12 @@ export default function SigninForm() {
       console.error(err);
       setErro("Erro ao verificar e-mail");
     }
+
+    
+
   };
+
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
