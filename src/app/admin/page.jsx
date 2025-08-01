@@ -56,15 +56,20 @@ export default function AdminPage() {
   console.log("Usuário logado:", user);
 
   return (
+    
     <main className="sm:ml-14 p-4 "> 
-    <div className="h-screen flex flex-col">
+    <div className=" flex flex-col">
       <Sidebar />
     </div>
     <section className="grid grid-colors-2 lg:grid-cols-4 gap-4">
       <CardDemo/>
       <CardDemo/>
+      <CardDemo/>
+      <CardDemo/>
+     
     </section> 
-    <MyChart />
+    <MyChart data={Object.values(historico)} />
+   
     </main>
   );
 }
