@@ -6,67 +6,61 @@ import {
   SheetTrigger,
 } from "../../../../@/components/ui/sheet";
 import { Button } from "../../../../@/components/ui/button";
-import { Package, PanelBottom, Home, LogOut, History } from "lucide-react";
-import Link from "next/link";
+import { PanelBottom, LogOut, History, Calendar } from "lucide-react";
 import {
   Tooltip,
   TooltipProvider,
   TooltipTrigger,
   TooltipContent,
 } from "@radix-ui/react-tooltip";
+import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 
-export default function Sidebar({ onLogout, user }) {
+export default function Sidebar({ onLogout, user, onAbaChange }) {
   const [horaAtual, setHoraAtual] = useState(null);
-  const [mounted, setMounted] = useState(false); // <- controle de montagem no cliente
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true); // <- só depois do primeiro render client-side
+    setMounted(true);
     setHoraAtual(new Date());
-
     const timer = setInterval(() => setHoraAtual(new Date()), 1000);
     return () => clearInterval(timer);
   }, []);
 
-  if (!mounted || !horaAtual) return null; // <- só mostra quando estiver montado no client
-
-  const diaFormatado = horaAtual.toLocaleDateString("pt-BR");
-  const horaFormatada = horaAtual.toLocaleTimeString("pt-BR");
+  if (!mounted || !horaAtual) return null;
 
   return (
     <div className="flex w-full flex-col bg-muted/40 ">
+      {/* Sidebar desktop */}
       <aside className="fixed inset-y-0 left-0 z-10 hidden w-14 border-r bg-background sm:flex flex-col">
-        <nav className="flex flex-col items-center gap-4 px-2 py-5 ">
+        <nav className="flex flex-col items-center gap-4 px-2 py-5">
           <TooltipProvider>
-            <Link
-              href=""
-              className="flex h-9 w-9 items-center justify-center gb-primary text-primary-foreground rounded-full "
-            >
-              <Package className="h-4 w-4 bg-black outline" />
-            </Link>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Link
-                  href=""
-                  className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground "
-                >
-                  <Home className="h-4 w-4 " />
-                </Link>
+            <Avatar className="H-8 W-8">
+              <AvatarImage src="" />
+              <AvatarFallback>NG</AvatarFallback>
+            </Avatar>
 
-                
-                
-              </TooltipTrigger>
-              <TooltipContent side="right">ola!</TooltipContent>
-            </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild>
-                 <Link
-                  href=""
-                  className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground "
+                <button
+                  onClick={() => onAbaChange("agendamentos")}
+                  className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground"
                 >
-                  <History className="h-4 w-4 " />
-                </Link>
+                  <Calendar className="h-4 w-4" />
+                </button>
               </TooltipTrigger>
-              <TooltipContent side="right">historico</TooltipContent>
+              <TooltipContent side="right">Agendamentos</TooltipContent>
+            </Tooltip>
+
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  onClick={() => onAbaChange("historico")}
+                  className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground"
+                >
+                  <History className="h-4 w-4" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="right">Histórico</TooltipContent>
             </Tooltip>
           </TooltipProvider>
         </nav>
@@ -75,51 +69,59 @@ export default function Sidebar({ onLogout, user }) {
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Link
-                  href=""
-                  className="flex h-9 w-9 items-center justify-center 
-                  rounded-lg text-muted-foreground transition-colors hover:text-foreground"
+                <button
+                  onClick={onLogout}
+                  className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground"
                 >
-                  <LogOut className="h-4 w-4 background-color-red-500" />
-                </Link>
+                  <LogOut className="h-4 w-4" />
+                </button>
               </TooltipTrigger>
-              <TooltipContent side="right">sair!</TooltipContent>
+              <TooltipContent side="right">Sair</TooltipContent>
             </Tooltip>
           </TooltipProvider>
         </nav>
       </aside>
+
+      {/* Header mobile */}
       <div className="sm:hidden flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
-        <header
-        className="sticky top-0 z-30 flex h-14 items-center px-4 border-b bg-background gap-4 sm:static 
-    s:h-auto sm:border-0 sm:bg-transparent sm:px-6"
-        >
+        <header className="sticky top-0 z-30 flex h-14 items-center px-4 border-b bg-background gap-4">
+          <Avatar className="H-8 W-8">
+            <AvatarImage src="" />
+            <AvatarFallback>NG</AvatarFallback>
+          </Avatar>
           <Sheet>
             <SheetTrigger asChild>
-              <Button side="rigth" size="icon" variant="outline" className="sm:hidden">
+              <Button size="icon" variant="outline" className="sm:hidden">
                 <PanelBottom className="w-5 h-5" />
                 <span className="sr-only">Menu</span>
               </Button>
             </SheetTrigger>
 
             <SheetContent side="left" className="sm:max-w-xs">
-              <nav className="grid gap-6 text-lg font-midium">
-                <Link
-                  href=""
-                  className="flex h-10 w-10 bg-primary rounded-full text-lg 
-            iten-center justify-center text-primary-foreground md:text-base gap-2"
+              <nav className="grid gap-6 text-lg font-medium">
+                <button
+                  onClick={() => onAbaChange("agendamentos")}
+                  className="flex items-center gap-2 p-2 text-base rounded hover:bg-muted"
                 >
-                  <Package className="h-5 w-5 transition-all" />
-                  <span className="sr-only">logo</span>
-                </Link>
+                  <Calendar className="h-5 w-5" />
+                  Agendamentos
+                </button>
 
-                <Link
-                  href=""
-                  className="flex h-10 w-10 bg-primary rounded-full text-lg 
-            iten-center justify-center text-primary-foreground md:text-base gap-2"
+                <button
+                  onClick={() => onAbaChange("historico")}
+                  className="flex items-center gap-2 p-2 text-base rounded hover:bg-muted"
                 >
-                  <Package className="h-5 w-5 transition-all" />
-                  <span className="sr-only">logo</span>
-                </Link>
+                  <History className="h-5 w-5" />
+                  Histórico
+                </button>
+
+                <button
+                  onClick={onLogout}
+                  className="flex items-center gap-2 p-2 text-base text-red-500 hover:bg-muted"
+                >
+                  <LogOut className="h-5 w-5" />
+                  Sair
+                </button>
               </nav>
             </SheetContent>
           </Sheet>

@@ -3,10 +3,8 @@
 import { useEffect, useState } from "react";
 import { fetchAgendamentos, concluirAgendamento } from "../../lib/api";
 import Sidebar from "../components/admin/Sidebar";
-import  { CardDemo } from "../components/admin/Card";
+import { CardDemo } from "../components/admin/Card";
 import { MyChart } from "../components/admin/Chart";
-
-
 
 export default function AdminPage() {
   const [agendamentos, setAgendamentos] = useState([]);
@@ -14,9 +12,8 @@ export default function AdminPage() {
   const [historico, setHistorico] = useState({});
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [filtro, setFiltro] = useState("pendentes");
+  const [abaAtiva, setAbaAtiva] = useState("agendamentos");
 
- 
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) return (window.location.href = "/signin");
@@ -53,23 +50,38 @@ export default function AdminPage() {
     window.location.href = "/signin";
   };
 
-  console.log("Usuário logado:", user);
-
   return (
-    
-    <main className="sm:ml-14 p-4 "> 
-    <div className=" flex flex-col">
-      <Sidebar />
-    </div>
-    <section className="grid grid-colors-2 lg:grid-cols-4 gap-4">
-      <CardDemo/>
-      <CardDemo/>
-      <CardDemo/>
-      <CardDemo/>
-     
-    </section> 
-    <MyChart data={Object.values(historico)} />
-   
+    <main className="sm:ml-14 p-4">
+      <Sidebar onLogout={handleLogout} user={user} onAbaChange={setAbaAtiva} />
+
+      {abaAtiva === "agendamentos" && (
+        <>
+          <section className="sm:block overflow-x-auto">
+            <h2 className="text-xl font-bold mb-4">Pendentes</h2>
+            <div className="flex sm:grid sm:grid-cols-4 gap-4 w-max sm:w-full px-2">
+              {agendamentos.map((agendamento) => (
+                <CardDemo key={agendamento._id} agendamento={agendamento} />
+              ))}
+            </div>
+          </section>
+
+          <h2 className="text-xl font-bold mt-8 mb-4">Concluídos</h2>
+          <section className="sm:block overflow-x-auto">
+            <div className="flex sm:grid sm:grid-cols-4 gap-4 w-max sm:w-full px-2">
+              {agendamentosConcluidos.map((agendamento) => (
+                <CardDemo key={agendamento._id} agendamento={agendamento} />
+              ))}
+            </div>
+          </section>
+        </>
+      )}
+
+      {abaAtiva === "historico" && (
+        <section className="mt-8">
+          <h2 className="text-xl font-bold mb-4">Histórico</h2>
+          <MyChart data={Object.values(historico)} />
+        </section>
+      )}
     </main>
   );
 }
