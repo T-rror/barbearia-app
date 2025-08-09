@@ -1,7 +1,17 @@
 const servicos = [
-  { nome: 'Corte de Cabelo', descricao: 'Cortes variados pra todos os gostos e cabelos', icone: '💈' },
-  { nome: 'Bar', descricao: 'Utilidade e lazer', icone: '🧔' },
-  { nome: '', descricao: '', icone: '👁️' },
+  {
+    nome: "Barbearia",
+    descricao: "",
+    icone: "",
+  },
+
+  { nome: "Bar", 
+    descricao: "Agua, coca, latão!!!", 
+    icone: "" },
+
+  { nome: "musica boa", 
+    descricao: "", 
+    icone: "" },
 ];
 
 export default function Servicos() {

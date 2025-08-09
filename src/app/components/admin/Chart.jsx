@@ -16,17 +16,12 @@ import {
   CardHeader,
   CardTitle,
 } from "../../../../@/components/ui/card";
+import { useMemo } from "react";
 
 // Espera os dados como prop
-export function MyChart({ agendamentos, titulo = "Agendamentos" }) {
+export function MyChart({ agendamentos, titulo = "Agendamentos"}) {
   // Agrupar por mês fictício (só como exemplo, já que não tem datas reais)
-  const chartData = [
-    { month: "Jan", desktop: 20, mobile: 10 },
-    { month: "Feb", desktop: 35, mobile: 20 },
-    { month: "Mar", desktop: 25, mobile: 15 },
-    { month: "Apr", desktop: 40, mobile: 30 },
-  ];
-
+ 
   const chartConfig = {
     desktop: {
       label: "Desktop",
@@ -37,6 +32,31 @@ export function MyChart({ agendamentos, titulo = "Agendamentos" }) {
       color: "#60a5fa",
     },
   };
+
+   const chartData = useMemo(() => {
+    const agrupado = {};
+
+    agendamentos.forEach(({ data, origem }) => {
+      const date = new Date(data);
+      if (isNaN(date)) return; // ignora data inválida
+
+      const mes = date.toLocaleString("default", { month: "short" }); // ex: "Jan"
+
+      if (!agrupado[mes]) {
+        agrupado[mes] = { month: mes, desktop: 0, mobile: 0 };
+      }
+
+      if (origem === "desktop") {
+        agrupado[mes].desktop += 1;
+      } else if (origem === "mobile") {
+        agrupado[mes].mobile += 1;
+      }
+    });
+
+    // Retorna um array ordenado por mês fictício (poderia ordenar corretamente se desejar)
+    return Object.values(agrupado);
+  }, [agendamentos]);
+  
 
   return (
     <Card className="w-full max-w-sm">

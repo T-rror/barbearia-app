@@ -1,18 +1,35 @@
-export default function Galeria() {
+"use client";
+
+import { useState, useEffect } from "react";
+
+export default function AlternadorImagens() {
+  // Lista de imagens (pode ser local ou URL)
+  const imagens = [
+    "/imagens/corte1.jpg",
+    "/imagens/corte2.jpg",
+    "/imagens/corte3.jpg",
+    "/imagens/corte5.jpg",
+  ];
+
+  const [index, setIndex] = useState(0);
+
+  useEffect(() => {
+    const intervalo = setInterval(() => {
+      setIndex((prev) => (prev + 1) % imagens.length); 
+      // "% imagens.length" garante que volte pro início
+    }, 3000); // troca a cada 3 segundos
+
+    return () => clearInterval(intervalo); // limpa o intervalo quando o componente sai da tela
+  }, []);
+
   return (
-    <section className="py-16 px-4 text-center">
-      <h2 className="text-3xl font-bold mb-10">Galeria de Cortes</h2>
-      <div className="grid gap-4 md:grid-cols-3">
-        {[1, 2, 3, 4, 5, 6].map((n) => (
-          <img
-            key={n}
-            src={`/imagens/corte${n}.jpg`} // coloque suas imagens reais aqui
-            alt={`Corte ${n}`}
-            className="rounded-xl shadow-md object-cover w-full h-60"
-          />
-          
-        ))}
-      </div>
-    </section>
+    <div className="flex justify-center items-center h-screen z-20">
+      <img
+        src={imagens[index]}
+        alt="Imagem alternando"
+        className="w-64 h-64 object-contain transition-all duration-500"
+      />
+    </div>
   );
 }
+

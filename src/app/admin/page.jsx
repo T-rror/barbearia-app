@@ -22,6 +22,7 @@ export default function AdminPage() {
 
     fetchAgendamentos(token)
       .then(({ pendentes, concluidos, historico }) => {
+        console.log("🔍 Agendamentos pendentes:", pendentes);
         setAgendamentos(pendentes);
         setAgendamentosConcluidos(concluidos);
         setHistorico(historico);
@@ -68,8 +69,8 @@ export default function AdminPage() {
           <h2 className="text-xl font-bold mt-8 mb-4">Concluídos</h2>
           <section className="sm:block overflow-x-auto">
             <div className="flex sm:grid sm:grid-cols-4 gap-4 w-max sm:w-full px-2">
-              {agendamentosConcluidos.map((agendamento) => (
-                <CardDemo key={agendamento._id} agendamento={agendamento} />
+              {agendamentosConcluidos.map((agendamento, index) => (
+                <CardDemo key={agendamento._id || index} agendamento={agendamento} />
               ))}
             </div>
           </section>
@@ -79,7 +80,7 @@ export default function AdminPage() {
       {abaAtiva === "historico" && (
         <section className="mt-8">
           <h2 className="text-xl font-bold mb-4">Histórico</h2>
-          <MyChart data={Object.values(historico)} />
+          <MyChart agendamentos={agendamentos} titulo="Agendamentos" />
         </section>
       )}
     </main>
