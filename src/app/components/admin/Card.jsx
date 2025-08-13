@@ -7,20 +7,50 @@ import {
   CardHeader,
   CardTitle,
 } from "../../../../@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
+import { concluirAgendamento, cancelarAgendamento } from "../../../lib/api";
 
-export function CardDemo({ agendamento }) {
+export function CardDemo({ agendamento, token, setAgendamentos }) {
   if (!agendamento) return null;
 
-  const { name, phone, data, time, service } = agendamento;
-  const formattedDate = new Date(data).toLocaleDateString("pt-BR",{
-  day: "2-digit",
-  month: "2-digit",
-  year: "numeric",
-});
+  const { name, phone, date, time, service } = agendamento;
+
+  let formattedDate = "Data inválida";
+  if (date) {
+    const dateObj = new Date(date);
+    if (!isNaN(dateObj)) {
+      formattedDate = dateObj.toLocaleDateString("pt-BR", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+      });
+    }
+  }
+
+  const handleConcluir = async () => {
+    try {
+      await concluirAgendamento(agendamento.id, token);
+
+      alert("Agendamento concluído!");
+      setAgendamentos((prev) => prev.filter((a) => a.id !== agendamento.id));
+    } catch (err) {
+      console.error(err);
+      alert(err.message);
+    }
+  };
+
+  const handleCancelar = async () => {
+    try {
+      await cancelarAgendamento(agendamento.id, token);
+      alert("Agendamento cancelado!");
+      setAgendamentos((prev) => prev.filter((a) => a.id !== agendamento.id));
+    } catch (err) {
+      console.error(err);
+      alert(err.message);
+    }
+  };
 
   return (
-    <Card className="w-full max-w-sm">
+    <Card className="w-full max-w-sm rounded-xl shadow-lg">
       <CardHeader>
         <CardTitle>{name}</CardTitle>
         <CardDescription>{phone}</CardDescription>
@@ -44,8 +74,12 @@ export function CardDemo({ agendamento }) {
       </CardContent>
 
       <CardFooter className="flex-col gap-2">
-        {/* Aqui você pode colocar botões de ação */}
-        {/* <Button variant="outline">Concluir</Button> */}
+        <Button onClick={handleConcluir} variant="outline" className="w-full">
+          Concluir
+        </Button>
+        <Button onClick={handleCancelar} variant="secondary" className="w-full">
+          Cancelar
+        </Button>
       </CardFooter>
     </Card>
   );

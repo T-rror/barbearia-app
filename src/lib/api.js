@@ -52,3 +52,27 @@ function agruparPorData(agendamentos) {
   });
   return resultado;
 }
+
+export async function createAgendamentoAdmin(data, token) {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/appointment/admin`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!res.ok) {
+    let errorMessage = "Erro ao criar agendamento pelo admin";
+    try {
+      const errorData = await res.json();
+      if (errorData?.message) errorMessage = errorData.message;
+    } catch {
+      // response não é JSON ou vazio
+    }
+    throw new Error(errorMessage);
+  }
+
+  return res.json();
+}

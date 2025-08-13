@@ -20,7 +20,7 @@ export default function Hero() {
   useEffect(() => {
     const intervalo = setInterval(() => {
       setIndex((prev) => (prev + 1) % imagens.length);
-    }, 3000);
+    }, 5000);
     return () => clearInterval(intervalo);
   }, []);
 
@@ -52,7 +52,7 @@ export default function Hero() {
     <div className="flex-grow flex flex-col overflow-hidden relative">
       {/* Círculo com cor dinâmica */}
       <div
-        className="fixed bottom-0 right-0 w-200 h-200 rounded-full translate-x-1/2 translate-y-1/2 z-10"
+        className="fixed bottom-0 right-0 w-300 h-300 rounded-full translate-x-1/2 translate-y-1/2 z-10"
         style={{ backgroundColor: corDinamica }}
       ></div>
 
@@ -66,7 +66,7 @@ export default function Hero() {
       />
 
       <section className="flex-grow h-screen bg-cover bg-center flex items-center justify-center text-white text-center px-4 overflow-hidden">
-        <div className="pl-0 z-20">
+        <div className="z-20">
           <Saldacao />
         </div>
 

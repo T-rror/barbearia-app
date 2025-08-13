@@ -6,7 +6,7 @@ import {
   SheetTrigger,
 } from "../../../../@/components/ui/sheet";
 import { Button } from "../../../../@/components/ui/button";
-import { PanelBottom, LogOut, History, Calendar } from "lucide-react";
+import { PanelBottom, LogOut, History, Calendar, Plus } from "lucide-react";
 import {
   Tooltip,
   TooltipProvider,
@@ -27,6 +27,8 @@ export default function Sidebar({ onLogout, user, onAbaChange }) {
   }, []);
 
   if (!mounted || !horaAtual) return null;
+
+  
 
   return (
     <div className="flex w-full flex-col bg-muted/40 ">
@@ -61,6 +63,18 @@ export default function Sidebar({ onLogout, user, onAbaChange }) {
                 </button>
               </TooltipTrigger>
               <TooltipContent side="right">Histórico</TooltipContent>
+            </Tooltip>
+
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  onClick={() => onAbaChange("novo-agendamento")}
+                  className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground"
+                >
+                  <Plus className="h-4 w-4" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="right">Novo Agendamento</TooltipContent>
             </Tooltip>
           </TooltipProvider>
         </nav>
@@ -113,6 +127,14 @@ export default function Sidebar({ onLogout, user, onAbaChange }) {
                 >
                   <History className="h-5 w-5" />
                   Histórico
+                </button>
+
+                <button
+                  onClick={() => onAbaChange("novo-agendamento")}
+                  className="flex items-center gap-2 p-2 text-base rounded hover:bg-muted"
+                >
+                  <Plus className="h-5 w-5" />
+                  Novo Agendamento
                 </button>
 
                 <button

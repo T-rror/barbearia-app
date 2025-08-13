@@ -4,6 +4,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 
+import { Card, CardContent, CardDescription, CardHeader } from "../../../../@/components/ui/card";
+
 export default function SigninForm() {
   const [step, setStep] = useState(1); // 1: email, 2: senha e dados
   const [emailExists, setEmailExists] = useState(null);
@@ -129,6 +131,14 @@ export default function SigninForm() {
   };
 
   return (
+    <Card className="bg-black/50 w-full max-w-sm">
+    <CardHeader className="text-center">
+      <h2 className="text-2xl font-bold">Entrar ou <span className="text-green-500">riar Conta</span> </h2> 
+    </CardHeader>
+    <CardDescription className="text-center mb-4">
+       <p className="text-gray-500">Encira seu e-mail para fazer login ou criar uma conta</p>
+    </CardDescription>
+    <CardContent className="space-y-6">
     <form
       onSubmit={step === 1 ? checkEmail : handleSubmit}
       className="space-y-4"
@@ -140,7 +150,7 @@ export default function SigninForm() {
         placeholder="E-mail"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
-        className="w-full p-2 border rounded"
+        className="w-full p-2 border rounded-3xl text-blue-500 text-center"
         required
         disabled={step === 2}
       />
@@ -155,8 +165,8 @@ export default function SigninForm() {
                 placeholder="Nome"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="w-full p-2 border rounded"
-                required
+                className="w-full p-2 border-none rounded-3xl text-blue-500 text-center"
+               required
               />
 
               <input
@@ -164,7 +174,7 @@ export default function SigninForm() {
                 placeholder="Telefone"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
-                className="w-full p-2 border rounded"
+                className="w-full p-2 border-none rounded-3xl text-blue-500 text-center"
                 required
               />
             </>
@@ -176,7 +186,7 @@ export default function SigninForm() {
             placeholder="Senha"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full p-2 border rounded"
+            className="w-full p-2 border-none rounded-3xl text-blue-500 text-center"
             required
           />
 
@@ -186,14 +196,14 @@ export default function SigninForm() {
               placeholder="Confirmar senha"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              className="w-full p-2 border rounded"
+              className="w-full p-2 border-none rounded-3xl text-blue-500 text-center"
               required
             />
           )}
         </>
       )}
 
-      <button type="submit" className="w-full bg-black text-white py-2 rounded">
+      <button type="submit" className="w-full bg-black text-white py-2 rounded-3xl">
         {step === 1 ? "Continuar" : emailExists ? "Entrar" : "Criar Conta"}
       </button>
 
@@ -208,11 +218,13 @@ export default function SigninForm() {
             setName("");
             setPhone("");
           }}
-          className="text-sm text-gray-500"
+          className="text-sm text-gray-500 rounded-3xl hover:text-red-500 transition text-center"
         >
           Voltar
         </button>
       )}
     </form>
+    </CardContent>
+    </Card>
   );
 }

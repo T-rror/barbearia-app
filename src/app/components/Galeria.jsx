@@ -17,7 +17,7 @@ export default function AlternadorImagens() {
     const intervalo = setInterval(() => {
       setIndex((prev) => (prev + 1) % imagens.length); 
       // "% imagens.length" garante que volte pro início
-    }, 3000); // troca a cada 3 segundos
+    }, 5000); // troca a cada 3 segundos
 
     return () => clearInterval(intervalo); // limpa o intervalo quando o componente sai da tela
   }, []);
