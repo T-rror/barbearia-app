@@ -7,9 +7,14 @@ import {
   CardHeader,
   CardTitle,
 } from "../../../../@/components/ui/card";
-import { concluirAgendamento, cancelarAgendamento } from "../../../lib/api";
 
-export function CardDemo({ agendamento, token, setAgendamentos }) {
+export function CardDemo({
+  agendamento,
+  onConcluir,
+  onCancelar,
+  isConcluido = false,
+  isCancelado = false,
+}) {
   if (!agendamento) return null;
 
   const { name, phone, date, time, service } = agendamento;
@@ -26,34 +31,21 @@ export function CardDemo({ agendamento, token, setAgendamentos }) {
     }
   }
 
-  const handleConcluir = async () => {
-    try {
-      await concluirAgendamento(agendamento.id, token);
-
-      alert("Agendamento concluído!");
-      setAgendamentos((prev) => prev.filter((a) => a.id !== agendamento.id));
-    } catch (err) {
-      console.error(err);
-      alert(err.message);
-    }
-  };
-
-  const handleCancelar = async () => {
-    try {
-      await cancelarAgendamento(agendamento.id, token);
-      alert("Agendamento cancelado!");
-      setAgendamentos((prev) => prev.filter((a) => a.id !== agendamento.id));
-    } catch (err) {
-      console.error(err);
-      alert(err.message);
-    }
-  };
-
   return (
     <Card className="w-full max-w-sm rounded-xl shadow-lg">
       <CardHeader>
         <CardTitle>{name}</CardTitle>
         <CardDescription>{phone}</CardDescription>
+        {isConcluido && (
+          <span className="text-green-500 text-sm font-semibold">
+            ✓ Concluído
+          </span>
+        )}
+        {isCancelado && (
+          <span className="text-red-500 text-sm font-semibold">
+            ✗ Cancelado
+          </span>
+        )}
       </CardHeader>
 
       <CardContent>
@@ -73,14 +65,24 @@ export function CardDemo({ agendamento, token, setAgendamentos }) {
         </article>
       </CardContent>
 
-      <CardFooter className="flex-col gap-2">
-        <Button onClick={handleConcluir} variant="outline" className="w-full">
-          Concluir
-        </Button>
-        <Button onClick={handleCancelar} variant="secondary" className="w-full">
-          Cancelar
-        </Button>
-      </CardFooter>
+      {!isConcluido && !isCancelado && (
+        <CardFooter className="flex-col gap-2">
+          <Button
+            onClick={() => onConcluir(agendamento.id)}
+            variant="outline"
+            className="w-full"
+          >
+            Concluir
+          </Button>
+          <Button
+            onClick={() => onCancelar(agendamento.id)}
+            variant="secondary"
+            className="w-full"
+          >
+            Cancelar
+          </Button>
+        </CardFooter>
+      )}
     </Card>
   );
 }

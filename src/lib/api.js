@@ -1,78 +1,25 @@
-// GET: buscar agendamentos
-export async function fetchAgendamentos(token) {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/appointment`, {
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-  });
+import axios from "axios";
 
-  if (!res.ok) throw new Error("Erro ao buscar agendamentos");
+const api = axios.create({
+  baseURL: process.env.NEXT_PUBLIC_API_URL,
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
 
-  const data = await res.json();
-
-  const concluidos = data.filter((a) => a.concluido === true);
-  const pendentes = data.filter((a) => !a.concluido);
-  const historico = agruparPorData(data);
-
-  return { pendentes, concluidos, historico };
-}
-
-// PATCH: marcar como concluído
-export async function concluirAgendamento(id, token) {
-  if (!token) {
-    throw new Error("Token não encontrado. Faça login novamente.");
-  }
-
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/appointment/${id}/concluir`, {
-    method: "PATCH",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-  });
-
-  if (!res.ok) {
-    const errorText = await res.text();
-    console.error("Erro no servidor:", errorText);
-    throw new Error("Erro ao concluir agendamento");
-  }
-
-  return await res.json();
-}
-
-// Função auxiliar para agrupar por data
-function agruparPorData(agendamentos) {
-  const resultado = {};
-  agendamentos.forEach(({ date }) => {
-    const dataObj = new Date(date);
-    if (isNaN(dataObj)) return; // evita datas inválidas
-    const dia = dataObj.toLocaleDateString("pt-BR");
-    resultado[dia] = (resultado[dia] || 0) + 1;
-  });
-  return resultado;
-}
-
-export async function createAgendamentoAdmin(data, token) {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/appointment/admin`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify(data),
-  });
-
-  if (!res.ok) {
-    let errorMessage = "Erro ao criar agendamento pelo admin";
-    try {
-      const errorData = await res.json();
-      if (errorData?.message) errorMessage = errorData.message;
-    } catch {
-      // response não é JSON ou vazio
+// Interceptor para adicionar o token automaticamente
+api.interceptors.request.use(
+  (config) => {
+    // Evita erro de execução no Next.js durante SSR
+    if (typeof window !== "undefined") {
+      const token = localStorage.getItem("token");
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
     }
-    throw new Error(errorMessage);
-  }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
 
-  return res.json();
-}
+export default api;

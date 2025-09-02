@@ -5,7 +5,8 @@ import {
   fetchAgendamentos,
   concluirAgendamento,
   createAgendamentoAdmin,
-} from "../../lib/api";
+  cancelarAgendamento,
+} from "../../lib/appointment";
 
 import Sidebar from "../components/admin/Sidebar";
 import { CardDemo } from "../components/admin/Card";
@@ -14,10 +15,11 @@ import { MyChart } from "../components/admin/Chart";
 export default function AdminPage() {
   const [agendamentos, setAgendamentos] = useState([]);
   const [agendamentosConcluidos, setAgendamentosConcluidos] = useState([]);
-  const [historico, setHistorico] = useState({});
+  const [agendamentosCancelados, setAgendamentosCancelados] = useState([]);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [abaAtiva, setAbaAtiva] = useState("agendamentos");
+  const [abaAtiva, setAbaAtiva] = useState("pendentes"); // mudado para padrão na aba de pendentes
+
   const [novoAgendamento, setNovoAgendamento] = useState({
     nome: "",
     telefone: "",
@@ -25,32 +27,26 @@ export default function AdminPage() {
     data: "",
     hora: "",
     createdByAdmin: true,
-    
   });
 
+  // Atualiza listas do backend
   const atualizarListas = async (token) => {
-    const { pendentes, concluidos, historico } = await fetchAgendamentos(token);
-    setAgendamentos(pendentes);
-    setAgendamentosConcluidos(concluidos);
-    setHistorico(historico);
+    try {
+      const { pendentes = [], concluidos = [], cancelados = [] } = await fetchAgendamentos(token);
+      setAgendamentos(pendentes);
+      setAgendamentosConcluidos(concluidos);
+      setAgendamentosCancelados(cancelados);
+    } catch (error) {
+      console.error("Erro ao atualizar listas:", error);
+    }
   };
 
+  // Criar agendamento
   const handleNovoAgendamento = async (e) => {
     e.preventDefault();
+    if (!user) return;
+
     try {
-
-
-      console.log("Enviando para backend:", {
-  name: novoAgendamento.nome,
-  phone: novoAgendamento.telefone,
-  service: novoAgendamento.servico,
-  date: novoAgendamento.data,
-  time: novoAgendamento.hora,
-  createdByAdmin: novoAgendamento.createdByAdmin,
-  
-});
-
-      // Ajusta para o formato que o backend espera
       await createAgendamentoAdmin(
         {
           name: novoAgendamento.nome,
@@ -70,9 +66,9 @@ export default function AdminPage() {
         servico: "",
         data: "",
         hora: "",
-        createdByAdmin: true
+        createdByAdmin: true,
       });
-      setAbaAtiva("agendamentos");
+      setAbaAtiva("pendentes");
       await atualizarListas(user.token);
     } catch (error) {
       console.error(error);
@@ -80,10 +76,11 @@ export default function AdminPage() {
     }
   };
 
+  // Buscar token e carregar agendamentos
   useEffect(() => {
     const token = localStorage.getItem("token");
-    console.log("Token encontrado:", token);
     if (!token) return (window.location.href = "/signin");
+
     setUser({ token });
     setLoading(true);
 
@@ -92,7 +89,9 @@ export default function AdminPage() {
       .finally(() => setLoading(false));
   }, []);
 
+  // Concluir
   const handleConcluir = async (id) => {
+    if (!user) return;
     try {
       await concluirAgendamento(id, user.token);
       await atualizarListas(user.token);
@@ -102,49 +101,117 @@ export default function AdminPage() {
     }
   };
 
+  // Cancelar
+  const handleCancelar = async (id) => {
+    if (!user) return;
+    try {
+      await cancelarAgendamento(id, user.token);
+      await atualizarListas(user.token);
+    } catch (error) {
+      console.error(error);
+      alert("Erro ao cancelar agendamento");
+    }
+  };
+
+  // Logout
   const handleLogout = () => {
     localStorage.removeItem("token");
     window.location.href = "/signin";
   };
 
+  // Loading
+  if (loading) {
+    return (
+      <main className="flex items-center justify-center h-screen">
+        <p className="text-lg text-gray-400">Carregando agendamentos...</p>
+      </main>
+    );
+  }
+
   return (
     <main className="sm:ml-14 p-4">
       <Sidebar onLogout={handleLogout} user={user} onAbaChange={setAbaAtiva} />
 
-      {abaAtiva === "agendamentos" && (
-        <>
-          <section className="sm:block overflow-x-auto">
-            <h2 className="text-xl font-bold mb-4">Pendentes</h2>
-            <div className="flex sm:grid sm:grid-cols-4 gap-4 w-max sm:w-full px-2">
-              {agendamentos.map((agendamento) => (
-                <CardDemo
-                  key={agendamento.id}
-                  agendamento={agendamento}
-                  onConcluir={handleConcluir}
-                />
-              ))}
-            </div>
-          </section>
+      {/* Abas */}
+      <div className="flex gap-2 mb-4">
+        <button
+          onClick={() => setAbaAtiva("pendentes")}
+          className={`px-4 py-2 rounded ${
+            abaAtiva === "pendentes" ? "bg-green-600 text-white" : "bg-gray-700 text-gray-300"
+          }`}
+        >
+          Pendentes ({agendamentos.length})
+        </button>
+        <button
+          onClick={() => setAbaAtiva("concluidos")}
+          className={`px-4 py-2 rounded ${
+            abaAtiva === "concluidos" ? "bg-blue-600 text-white" : "bg-gray-700 text-gray-300"
+          }`}
+        >
+          Concluídos ({agendamentosConcluidos.length})
+        </button>
+        <button
+          onClick={() => setAbaAtiva("cancelados")}
+          className={`px-4 py-2 rounded ${
+            abaAtiva === "cancelados" ? "bg-red-600 text-white" : "bg-gray-700 text-gray-300"
+          }`}
+        >
+          Cancelados ({agendamentosCancelados.length})
+        </button>
+        <button
+          onClick={() => setAbaAtiva("novo-agendamento")}
+          className={`px-4 py-2 rounded ${
+            abaAtiva === "novo-agendamento" ? "bg-green-500 text-white" : "bg-gray-700 text-gray-300"
+          }`}
+        >
+          Novo Agendamento
+        </button>
+        <button
+          onClick={() => setAbaAtiva("historico")}
+          className={`px-4 py-2 rounded ${
+            abaAtiva === "historico" ? "bg-purple-600 text-white" : "bg-gray-700 text-gray-300"
+          }`}
+        >
+          Histórico
+        </button>
+      </div>
 
-          <h2 className="text-xl font-bold mt-8 mb-4">Concluídos</h2>
-          <section className="sm:block overflow-x-auto">
-            <div className="flex sm:grid sm:grid-cols-4 gap-4 w-max sm:w-full px-2">
-              {agendamentosConcluidos.map((agendamento, index) => (
-                <CardDemo
-                  key={agendamento.id || index}
-                  agendamento={agendamento}
-                  onConcluir={handleConcluir}
-                />
-              ))}
-            </div>
-          </section>
-        </>
+      {/* Conteúdo das abas */}
+      {abaAtiva === "pendentes" && (
+        <section className="sm:block overflow-x-auto">
+          <h2 className="text-xl font-bold mb-4">Pendentes</h2>
+          <div className="flex sm:grid sm:grid-cols-4 gap-4 w-max sm:w-full px-2">
+            {agendamentos.map((agendamento) => (
+              <CardDemo
+                key={agendamento.id}
+                agendamento={agendamento}
+                onConcluir={handleConcluir}
+                onCancelar={handleCancelar}
+              />
+            ))}
+          </div>
+        </section>
       )}
 
-      {abaAtiva === "historico" && (
-        <section className="mt-8">
-          <h2 className="text-xl font-bold mb-4">Histórico</h2>
-          <MyChart agendamentos={agendamentos} titulo="Agendamentos" />
+      {abaAtiva === "concluidos" && (
+        <section className="sm:block overflow-x-auto">
+          <h2 className="text-xl font-bold mb-4">Concluídos</h2>
+          <div className="flex sm:grid sm:grid-cols-4 gap-4 w-max sm:w-full px-2">
+            {agendamentosConcluidos.map((agendamento) => (
+              <CardDemo key={agendamento.id} agendamento={agendamento} isConcluido={true} />
+            ))}
+          </div>
+        </section>
+      )}
+
+      {abaAtiva === "cancelados" && (
+        <section className="sm:block overflow-x-auto">
+          <h2 className="text-xl font-bold mb-4">Cancelados</h2>
+          <div className="flex sm:grid sm:grid-cols-4 gap-4 w-max sm:w-full px-2">
+            {agendamentosCancelados.map((agendamento) => (
+              <CardDemo key={agendamento.id} agendamento={agendamento} isCancelado={true} />
+            ))}
+          </div>
         </section>
       )}
 
@@ -167,10 +234,7 @@ export default function AdminPage() {
               placeholder="Telefone"
               value={novoAgendamento.telefone}
               onChange={(e) =>
-                setNovoAgendamento({
-                  ...novoAgendamento,
-                  telefone: e.target.value,
-                })
+                setNovoAgendamento({ ...novoAgendamento, telefone: e.target.value })
               }
               className="w-full p-2 rounded bg-gray-900"
               required
@@ -180,10 +244,7 @@ export default function AdminPage() {
               placeholder="Serviço"
               value={novoAgendamento.servico}
               onChange={(e) =>
-                setNovoAgendamento({
-                  ...novoAgendamento,
-                  servico: e.target.value,
-                })
+                setNovoAgendamento({ ...novoAgendamento, servico: e.target.value })
               }
               className="w-full p-2 rounded bg-gray-900"
               required
@@ -197,7 +258,7 @@ export default function AdminPage() {
               className="w-full p-2 rounded bg-gray-900"
               required
             />
-            <input
+                        <input
               type="time"
               value={novoAgendamento.hora}
               onChange={(e) =>
@@ -215,6 +276,19 @@ export default function AdminPage() {
           </form>
         </section>
       )}
+
+      {abaAtiva === "historico" && (
+        <section className="mt-8">
+          <h2 className="text-xl font-bold mb-4">Histórico</h2>
+          <MyChart
+            agendamentos={agendamentos}
+            agendamentosConcluidos={agendamentosConcluidos}
+            agendamentosCancelados={agendamentosCancelados}
+            titulo="Agendamentos"
+          />
+        </section>
+      )}
     </main>
   );
 }
+
