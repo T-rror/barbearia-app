@@ -130,7 +130,9 @@ export default function AdminPage() {
 
   return (
     <main className="sm:ml-14 p-4">
-      <Sidebar onLogout={handleLogout} user={user} onAbaChange={setAbaAtiva} />
+      <Sidebar onLogout={handleLogout} 
+               user={user} 
+               onAbaChange={setAbaAtiva} />
 
       {/* Abas */}
       <div className="flex gap-2 mb-4">
@@ -175,6 +177,7 @@ export default function AdminPage() {
           Histórico
         </button>
       </div>
+      
 
       {/* Conteúdo das abas */}
       {abaAtiva === "pendentes" && (

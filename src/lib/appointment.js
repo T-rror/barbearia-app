@@ -15,7 +15,7 @@ export async function fetchAgendamentos() {
   } catch (error) {
     console.error(
       "Erro ao buscar agendamentos:",
-      error.response?.data || error.message
+      error.response?.data || error.message__
     );
     throw new Error("Erro ao buscar agendamentos");
   }
