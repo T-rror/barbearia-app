@@ -18,7 +18,7 @@ export default function Saldacao() {
       <div className="flex flex-col items-center text-center px-6 mt-6 space-y-4">
         {/* Logo */}
         <img
-          src="/imagnes/corte5.jpg"
+          src="/imagens/corte5.jpg"
           alt="Logo Barbearia da Neguinha"
           className="w-20 md:w-24 mb-4"
         />
@@ -52,8 +52,7 @@ export default function Saldacao() {
         </button>
       </div>
 
-      {/* Home Indicator (opcional, estilo iPhone) */}
-      <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-24 h-1.5 bg-gray-300 rounded-full"></div>
+      
     </section>
   );
 }

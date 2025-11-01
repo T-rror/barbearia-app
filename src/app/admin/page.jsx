@@ -13,10 +13,22 @@ import { CardDemo } from "../components/admin/Card";
 import { MyChart } from "../components/admin/Chart";
 
 export default function AdminPage() {
+  // Função utilitária (coloque no topo do arquivo)
+const decodeJWT = (token) => {
+  try {
+    const base64Payload = token.split(".")[1];
+    const payload = JSON.parse(atob(base64Payload));
+    return payload; // retorna { name, avatar, role, ... } se existir
+  } catch (err) {
+    return null;
+  }
+};
+
   const [agendamentos, setAgendamentos] = useState([]);
   const [agendamentosConcluidos, setAgendamentosConcluidos] = useState([]);
   const [agendamentosCancelados, setAgendamentosCancelados] = useState([]);
   const [user, setUser] = useState(null);
+  const [userInfo, setUserInfo] = useState({ name: "", avatar: "" });
   const [loading, setLoading] = useState(false);
   const [abaAtiva, setAbaAtiva] = useState("pendentes"); // mudado para padrão na aba de pendentes
 
@@ -76,18 +88,25 @@ export default function AdminPage() {
     }
   };
 
-  // Buscar token e carregar agendamentos
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) return (window.location.href = "/signin");
+ useEffect(() => {
+  const token = localStorage.getItem("token");
+  if (!token) return (window.location.href = "/signin");
 
-    setUser({ token });
-    setLoading(true);
+  const payload = decodeJWT(token);
 
-    atualizarListas(token)
-      .catch((err) => console.error(err))
-      .finally(() => setLoading(false));
-  }, []);
+  // salva apenas dados não sensíveis
+  setUserInfo({
+    name: payload?.name || "Administrador",
+    avatar: payload?.avatar || "",
+  });
+
+  setUser({ token });
+  setLoading(true);
+
+  atualizarListas(token)
+    .catch((err) => console.error(err))
+    .finally(() => setLoading(false));
+}, []);
 
   // Concluir
   const handleConcluir = async (id) => {
@@ -129,10 +148,37 @@ export default function AdminPage() {
   }
 
   return (
+
+
+    
     <main className="sm:ml-14 p-4">
+
+       {/* Cabeçalho com nome e avatar */}
+<div className="flex items-center justify-end gap-3 mb-6 mr-4">
+  {userInfo.avatar ? (
+    <img
+      src={userInfo.avatar}
+      alt="Avatar"
+      className="w-10 h-10 rounded-full border border-gray-600 object-cover"
+    />
+  ) : (
+    <div className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center text-white font-semibold">
+      {userInfo.name ? userInfo.name.charAt(0).toUpperCase() : "A"}
+    </div>
+  )}
+
+  <div>
+    <p className="text-white font-medium">{userInfo.name}</p>
+    <p className="text-xs text-gray-400">Admin</p>
+  </div>
+</div>
+
+
+
       <Sidebar onLogout={handleLogout} 
                user={user} 
                onAbaChange={setAbaAtiva} />
+               
 
       {/* Abas */}
       <div className="flex gap-2 mb-4">

@@ -50,7 +50,7 @@ export default function SignupForm() {
 
       {/* Logo */}
       <img
-        src="/images/logo.png"
+        src="/imagens/corte5.jpg"
         alt="Logo Barbearia"
         className="w-16 md:w-20 mt-6 mb-6 transform scale-x-[-1]"
       />
@@ -120,7 +120,7 @@ export default function SignupForm() {
         <p className="text-center text-gray-500 text-sm mt-2">
           Já tem uma conta?{" "}
           <span
-            onClick={() => router.push("/login")}
+            onClick={() => router.push("/signin")}
             className="text-orange-500 font-semibold cursor-pointer hover:underline"
           >
             Faça login
@@ -128,8 +128,7 @@ export default function SignupForm() {
         </p>
       </form>
 
-      {/* Home Indicator */}
-      <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-24 h-1.5 bg-gray-300 rounded-full"></div>
+    
     </section>
   );
 }

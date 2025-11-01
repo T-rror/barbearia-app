@@ -36,10 +36,7 @@ export default function Sidebar({ onLogout, user, onAbaChange }) {
       <aside className="fixed inset-y-0 left-0 z-10 hidden w-14 border-r bg-background sm:flex flex-col">
         <nav className="flex flex-col items-center gap-4 px-2 py-5">
           <TooltipProvider>
-            <Avatar className="H-8 W-8">
-              <AvatarImage src="" />
-              <AvatarFallback>NG</AvatarFallback>
-            </Avatar>
+           
 
             <Tooltip>
               <TooltipTrigger asChild>

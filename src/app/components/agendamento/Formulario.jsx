@@ -23,78 +23,95 @@ export default function Formulario({
   }, []);
 
   return (
-    <div className="bg-gray-900 min-h-screen flex items-center justify-center">
-      <Card className="bg-gray-900 text-white max-w-md mx-auto mt-10 p-6 rounded-lg shadow-lg">
-        <CardHeader className="text-white text-center text-xl font-bold">
-          Agende seu Corte
-        </CardHeader>
-        <CardDescription className="text-center text-gray-400">
-          Preencha o formulário abaixo para agendar conosco
-        </CardDescription>
-        <CardContent className="bg-gray-800 p-6 rounded-lg shadow-md">
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 rounded-3xl">
-            <input
-              {...register("date", { required: "A data é obrigatória" })}
-              type="date"
-              className="w-full p-2 border rounded-3xl text-white bg-black"
-              min={hoje}
-              defaultValue={hoje} // já inicia com a data de hoje
-              onChange={(e) => verificarHorariosDisponiveis(e.target.value)}
-            />
-            {errors.date && (
-              <p className="text-red-500">{errors.date.message}</p>
-            )}
+    <section className="relative flex flex-col items-center justify-between min-h-screen bg-white overflow-hidden px-6">
+      {/* Status Bar / topo */}
+      <div className="w-full h-10 bg-white"></div>
 
-            <select
-              {...register("time", { required: "A hora é obrigatória" })}
-              className="w-full p-2 border rounded-3xl text-white bg-black"
-            >
-              <option value="">Horários Dispobiveis</option>
-              {horariosDisponiveis.map((hora) => (
-                <option key={hora} value={hora}>
-                  {hora}
-                </option>
-              ))}
-            </select>
-            {horariosDisponiveis.length === 0 && (
-              <p className="text-red-500">
-                Nenhum horário disponível para essa data.
-              </p>
-            )}
-            {errors.time && (
-              <p className="text-red-500">{errors.time.message}</p>
-            )}
+      {/* Logo */}
+      <img
+        src="/imagens/corte5.jpg"
+        alt="Logo Barbearia"
+        className="w-16 md:w-20 mt-6 mb-6 transform scale-x-[-1]"
+      />
 
-            <select
-              {...register("service", { required: "O serviço é obrigatório" })}
-              className="w-full p-2 border rounded-3xl text-white bg-black"
-            >
-              <option>Serviço</option>
-              <option value="corte">Corte do jaca</option>
-              <option value="corte">Corte americano</option>
-              <option value="corte">Corte simples</option>
-              <option value="corte">Corte modelado</option>
-              <option value="corte">Tesoura</option>
-              <option value="barba">Barba siples</option>
-              <option value="barba">Barba modelada</option>
-              <option value="Sombracelha">Sombracelha</option>
-              <option value="tinta">pretinho</option> 
-              <option value="tinta">reflexo</option>
-              <option value="tinta">nevou</option>
-            </select>
-            {errors.service && (
-              <p className="text-red-500">{errors.service.message}</p>
-            )}
+      {/* Título */}
+      <h1 className="text-3xl md:text-4xl font-bold text-gray-900 text-center mb-8">
+        Agendar Corte
+      </h1>
 
-            <button
-              type="submit"
-              className="bg-black text-white px-4 py-2 rounded-3xl hover:bg-green-300 transition-colors duration-300 w-full"
-            >
-              Enviar
-            </button>
-          </form>
-        </CardContent>
-      </Card>
-    </div>
+      {/* Formulário */}
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="flex flex-col w-full max-w-md space-y-4"
+      >
+        {/* Data */}
+        <input
+          {...register("date", { required: "A data é obrigatória" })}
+          type="date"
+          min={hoje}
+          defaultValue={hoje}
+          onChange={(e) => verificarHorariosDisponiveis(e.target.value)}
+          className="w-full h-14 px-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 text-gray-900"
+        />
+        {errors.date && <p className="text-red-500 text-sm">{errors.date.message}</p>}
+
+        {/* Horário */}
+        <select
+          {...register("time", { required: "A hora é obrigatória" })}
+          className="w-full h-14 px-4 border border-gray-300 rounded-md bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-500"
+        >
+          <option value="">Horários disponíveis</option>
+          {horariosDisponiveis.map((hora) => (
+            <option key={hora} value={hora}>
+              {hora}
+            </option>
+          ))}
+        </select>
+        {horariosDisponiveis.length === 0 && (
+          <p className="text-red-500 text-sm">
+            Nenhum horário disponível para essa data.
+          </p>
+        )}
+        {errors.time && <p className="text-red-500 text-sm">{errors.time.message}</p>}
+
+        {/* Serviço */}
+        <select
+          {...register("service", { required: "O serviço é obrigatório" })}
+          className="w-full h-14 px-4 border border-gray-300 rounded-md bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-500"
+        >
+          <option value="">Selecione o serviço</option>
+          <option value="corte">Corte do Jaca</option>
+          <option value="corte-americano">Corte Americano</option>
+          <option value="corte-simples">Corte Simples</option>
+          <option value="modelado">Corte Modelado</option>
+          <option value="tesoura">Tesoura</option>
+          <option value="barba">Barba Simples</option>
+          <option value="barba-modelada">Barba Modelada</option>
+          <option value="sobrancelha">Sobrancelha</option>
+          <option value="pretinho">Pretinho</option>
+          <option value="reflexo">Reflexo</option>
+          <option value="nevou">Nevou</option>
+        </select>
+        {errors.service && (
+          <p className="text-red-500 text-sm">{errors.service.message}</p>
+        )}
+
+        {/* Botão Agendar */}
+        <button
+          type="submit"
+          className="w-full h-14 bg-black text-white rounded-2xl font-semibold hover:bg-gray-800 transition"
+        >
+          Agendar
+        </button>
+
+        {/* Mensagem informativa */}
+        <p className="text-center text-gray-500 text-sm mt-2">
+          Lembre-se de chegar{" "}
+          <span className="font-semibold text-orange-500">10 minutos antes</span> do horário marcado.
+        </p>
+      </form>
+
+     
+    </section>
   );
 }

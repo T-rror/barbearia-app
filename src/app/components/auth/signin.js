@@ -39,15 +39,18 @@ export default function LoginForm() {
 
       {/* Logo */}
       <img
-        src="/images/logo.png"
+        src="/imagens/corte5.jpg"
         alt="Logo Barbearia"
         className="w-16 md:w-20 mt-6 mb-6 transform scale-x-[-1]"
       />
 
       {/* Título */}
       <h1 className="text-3xl md:text-4xl font-bold text-gray-900 text-center mb-8">
-        Welcome back.
+        O que vai ser hoje?
       </h1>
+      <p className="text-gray-600 text-center mb-8">
+        Faça login para agendar um horário
+      </p>
 
       {/* Formulário */}
       <form
@@ -93,8 +96,7 @@ export default function LoginForm() {
         </p>
       </form>
 
-      {/* Home Indicator */}
-      <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-24 h-1.5 bg-gray-300 rounded-full"></div>
+     
     </section>
   );
 }
