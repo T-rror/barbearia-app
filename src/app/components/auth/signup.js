@@ -44,13 +44,13 @@ export default function SignupForm() {
   };
 
   return (
-    <section className="relative flex flex-col items-center justify-between min-h-screen bg-white overflow-hidden px-6">
+    <section className="relative flex flex-col items-center justify-between min-h-screen bg-black overflow-hidden px-6">
       {/* Status Bar / topo */}
-      <div className="w-full h-10 bg-white"></div>
+      <div className="w-full h-10 bg-black text-white">ola</div>
 
       {/* Logo */}
       <img
-        src="/imagens/corte5.jpg"
+        src="/imagens/logo.png"
         alt="Logo Barbearia"
         className="w-16 md:w-20 mt-6 mb-6 transform scale-x-[-1]"
       />
@@ -69,7 +69,7 @@ export default function SignupForm() {
           type="text"
           placeholder="Nome"
           {...register("name")}
-          className="w-full h-14 px-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 text-gray-900"
+          className="w-full h-14 px-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 text-gray-600"
         />
         {errors.name && <p className="text-red-500 text-sm">{errors.name.message}</p>}
 
@@ -77,7 +77,7 @@ export default function SignupForm() {
           type="tel"
           placeholder="Telefone"
           {...register("phone")}
-          className="w-full h-14 px-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 text-gray-900"
+          className="w-full h-14 px-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 text-gray-600"
         />
         {errors.phone && <p className="text-red-500 text-sm">{errors.phone.message}</p>}
 
@@ -85,7 +85,7 @@ export default function SignupForm() {
           type="email"
           placeholder="E-mail"
           {...register("email")}
-          className="w-full h-14 px-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 text-gray-900"
+          className="w-full h-14 px-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 text-gray-600"
         />
         {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
 
@@ -93,7 +93,7 @@ export default function SignupForm() {
           type="password"
           placeholder="Senha"
           {...register("password")}
-          className="w-full h-14 px-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 text-gray-900"
+          className="w-full h-14 px-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 text-gray-600"
         />
         {errors.password && <p className="text-red-500 text-sm">{errors.password.message}</p>}
 
@@ -101,7 +101,7 @@ export default function SignupForm() {
           type="password"
           placeholder="Confirmar senha"
           {...register("confirmPassword")}
-          className="w-full h-14 px-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 text-gray-900"
+          className="w-full h-14 px-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 text-gray-600"
         />
         {errors.confirmPassword && (
           <p className="text-red-500 text-sm">{errors.confirmPassword.message}</p>
@@ -128,7 +128,7 @@ export default function SignupForm() {
         </p>
       </form>
 
-    
+     
     </section>
   );
 }

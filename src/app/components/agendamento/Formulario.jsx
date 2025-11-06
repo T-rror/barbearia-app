@@ -23,13 +23,13 @@ export default function Formulario({
   }, []);
 
   return (
-    <section className="relative flex flex-col items-center justify-between min-h-screen bg-white overflow-hidden px-6">
+    <section className="relative flex flex-col items-center justify-between min-h-screen bg-black overflow-hidden px-6">
       {/* Status Bar / topo */}
-      <div className="w-full h-10 bg-white"></div>
+      <div className="w-full h-10 bg-black"></div>
 
       {/* Logo */}
       <img
-        src="/imagens/corte5.jpg"
+        src="/imagens/logo.png"
         alt="Logo Barbearia"
         className="w-16 md:w-20 mt-6 mb-6 transform scale-x-[-1]"
       />
@@ -58,7 +58,7 @@ export default function Formulario({
         {/* Horário */}
         <select
           {...register("time", { required: "A hora é obrigatória" })}
-          className="w-full h-14 px-4 border border-gray-300 rounded-md bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-500"
+          className="w-full h-14 px-4 border border-gray-300 rounded-md bg-black text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-500"
         >
           <option value="">Horários disponíveis</option>
           {horariosDisponiveis.map((hora) => (
@@ -77,7 +77,7 @@ export default function Formulario({
         {/* Serviço */}
         <select
           {...register("service", { required: "O serviço é obrigatório" })}
-          className="w-full h-14 px-4 border border-gray-300 rounded-md bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-500"
+          className="w-full h-14 px-4 border border-gray-300 rounded-md bg-black text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-500"
         >
           <option value="">Selecione o serviço</option>
           <option value="corte">Corte do Jaca</option>

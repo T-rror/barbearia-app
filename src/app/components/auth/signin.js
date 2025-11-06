@@ -33,13 +33,13 @@ export default function LoginForm() {
   };
 
   return (
-    <section className="relative flex flex-col items-center justify-between min-h-screen bg-white overflow-hidden px-6">
+    <section className="relative flex flex-col items-center justify-between min-h-screen bg-black overflow-hidden px-6">
       {/* Status Bar / top background */}
-      <div className="w-full h-10 bg-white"></div>
+      <div className="w-full h-10 bg-black text-white"></div>
 
       {/* Logo */}
       <img
-        src="/imagens/corte5.jpg"
+        src="/imagens/logo.png"
         alt="Logo Barbearia"
         className="w-16 md:w-20 mt-6 mb-6 transform scale-x-[-1]"
       />
@@ -62,7 +62,7 @@ export default function LoginForm() {
           type="email"
           placeholder="Nome ou e-mail"
           {...register("email")}
-          className="w-full h-14 px-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 text-gray-900"
+          className="w-full h-14 px-4 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 text-gray-600"
         />
         {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
 
@@ -71,7 +71,7 @@ export default function LoginForm() {
           type="password"
           placeholder="Senha"
           {...register("password")}
-          className="w-full h-14 px-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 text-gray-900"
+          className="w-full h-14 px-4 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 text-gray-600"
         />
         {errors.password && <p className="text-red-500 text-sm">{errors.password.message}</p>}
 
