@@ -145,3 +145,6 @@ Feedbacks e sugestões são sempre bem-vindos.
 Mateus Fernandes
 Desenvolvedor Full Stack Júnior
 
+
+🔗 LinkedIn: https://www.linkedin.com/in/devmateusfernandes
+🔗 GitHub: https://github.com/t-rror
