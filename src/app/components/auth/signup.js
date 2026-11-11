@@ -8,9 +8,12 @@ import api from "../../../lib/api";
 
 const schema = yup.object({
   name: yup.string().required("Informe seu nome"),
-  phone: yup.string().required("Informe seu telefone"),
+  phone: yup
+    .string()
+    .matches(/^\(?\d{2}\)?\s?\d{4,5}-?\d{4}$/, "Informe um telefone válido com DDD")
+    .required("Informe seu telefone"),
   email: yup.string().email("E-mail inválido").required("Informe seu e-mail"),
-  password: yup.string().min(6, "Mínimo de 6 caracteres").required("Informe sua senha"),
+  password: yup.string().min(8, "Mínimo de 8 caracteres").required("Informe sua senha"),
   confirmPassword: yup
     .string()
     .oneOf([yup.ref("password")], "Senhas não coincidem")
@@ -27,7 +30,13 @@ export default function SignupForm() {
 
   const onSubmit = async (data) => {
     try {
-      await api.post("/auth/signup", data);
+      const signupData = {
+        name: data.name,
+        phone: data.phone,
+        email: data.email,
+        password: data.password,
+      };
+      await api.post("/auth/signup", signupData);
       // Login automático
       const res = await api.post("/auth/signin", {
         email: data.email,
@@ -38,8 +47,9 @@ export default function SignupForm() {
       const me = await api.get("/auth/me");
       if (me.data.role === "CLIENTE") router.push("/agendamento");
       else router.push("/admin");
-    } catch {
-      alert("Erro ao criar conta");
+    } catch (error) {
+      const message = error.response?.data?.message;
+      alert(Array.isArray(message) ? message.join("; ") : message || "Erro ao criar conta");
     }
   };
 

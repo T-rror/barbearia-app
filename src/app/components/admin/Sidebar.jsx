@@ -1,151 +1,135 @@
 "use client";
-import { useEffect, useState } from "react";
+
+import { useState } from "react";
+
 import {
   Sheet,
+  SheetHeader,
   SheetContent,
+  SheetTitle,
   SheetTrigger,
 } from "../../../../@/components/ui/sheet";
+
 import { Button } from "../../../../@/components/ui/button";
+
 import { PanelBottom, LogOut, History, Calendar, Plus } from "lucide-react";
-import {
-  Tooltip,
-  TooltipProvider,
-  TooltipTrigger,
-  TooltipContent,
-} from "@radix-ui/react-tooltip";
-import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
+import React from "react";
 
-export default function Sidebar({ onLogout, user, onAbaChange }) {
-  const [horaAtual, setHoraAtual] = useState(null);
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-    setHoraAtual(new Date());
-    const timer = setInterval(() => setHoraAtual(new Date()), 1000);
-    return () => clearInterval(timer);
-  }, []);
-
-  if (!mounted || !horaAtual) return null;
-
-  
+export default function Sidebar({
+  onLogout,
+  onAbaChange,
+  agendamentos,
+  agendamentosConcluidos,
+  agendamentosCancelados,
+}) {
+  const [menuAberto, setMenuAberto] = useState(null);
 
   return (
-    <div className="flex w-full flex-col bg-muted/40 ">
-      {/* Sidebar desktop */}
-      <aside className="fixed inset-y-0 left-0 z-10 hidden w-14 border-r bg-background sm:flex flex-col">
-        <nav className="flex flex-col items-center gap-4 px-2 py-5">
-          <TooltipProvider>
-           
+    <>
+      <aside className="fixed inset-y-0 left-0 w-16 bg-black border-r border-zinc-800 hidden sm:flex flex-col items-center py-6 gap-6">
+        <button
+          onClick={() =>
+            setMenuAberto(menuAberto === "agendamentos" ? null : "agendamentos")
+          }
+          className="text-gray-400 hover:text-orange-500"
+        >
+          <Calendar />
+        </button>
 
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button
-                  onClick={() => onAbaChange("agendamentos")}
-                  className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground"
-                >
-                  <Calendar className="h-4 w-4" />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent side="right">Agendamentos</TooltipContent>
-            </Tooltip>
+        {menuAberto === "agendamentos" && (
+          <div className="absolute left-16 top-20 bg-gray-900 border border-gray-700 rounded-lg shadow-lg w-52">
+            <button
+              onClick={() => onAbaChange("pendentes")}
+              className="block w-full text-left px-4 py-2 hover:bg-gray-800"
+            >
+              Pendentes ({agendamentos.length})
+            </button>
 
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button
-                  onClick={() => onAbaChange("historico")}
-                  className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground"
-                >
-                  <History className="h-4 w-4" />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent side="right">Histórico</TooltipContent>
-            </Tooltip>
+            <button
+              onClick={() => onAbaChange("concluidos")}
+              className="block w-full text-left px-4 py-2 hover:bg-gray-800"
+            >
+              Concluídos ({agendamentosConcluidos.length})
+            </button>
 
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button
-                  onClick={() => onAbaChange("novo-agendamento")}
-                  className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground"
-                >
-                  <Plus className="h-4 w-4" />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent side="right">Novo Agendamento</TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        </nav>
+            <button
+              onClick={() => onAbaChange("cancelados")}
+              className="block w-full text-left px-4 py-2 hover:bg-gray-800"
+            >
+              Cancelados ({agendamentosCancelados.length})
+            </button>
 
-        <nav className="mt-auto flex flex-col items-center gap-4 px-2 py-5">
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button
-                  onClick={onLogout}
-                  className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground"
-                >
-                  <LogOut className="h-4 w-4" />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent side="right">Sair</TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        </nav>
+            <button
+              onClick={() => onAbaChange("novo-agendamento")}
+              className="block w-full text-left px-4 py-2 hover:bg-gray-800"
+            >
+              Novo Agendamento
+            </button>
+
+            <button
+              onClick={() => onAbaChange("historico")}
+              className="block w-full text-left px-4 py-2 hover:bg-gray-800"
+            >
+              Histórico
+            </button>
+          </div>
+        )}
+
+        <button
+          onClick={() => onAbaChange("historico")}
+          className="text-gray-400 hover:text-orange-500"
+        >
+          <History />
+        </button>
+
+        <button
+          onClick={() => onAbaChange("novo-agendamento")}
+          className="text-gray-400 hover:text-orange-500"
+        >
+          <Plus />
+        </button>
+
+        <div className="mt-auto">
+          <button
+            onClick={onLogout}
+            className="text-gray-400 hover:text-red-500"
+          >
+            <LogOut />
+          </button>
+        </div>
       </aside>
 
-      {/* Header mobile */}
-      <div className="sm:hidden flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
-        <header className="sticky top-0 z-30 flex h-14 items-center px-4 border-b bg-background gap-4">
-          <Avatar className="H-8 W-8">
-            <AvatarImage src="" />
-            <AvatarFallback>NG</AvatarFallback>
-          </Avatar>
-          <Sheet>
-            <SheetTrigger asChild>
-              <Button size="icon" variant="outline" className="sm:hidden">
-                <PanelBottom className="w-5 h-5" />
-                <span className="sr-only">Menu</span>
-              </Button>
-            </SheetTrigger>
+      <div className="sm:hidden fixed top-4 left-4">
+        <Sheet>
+          <SheetTrigger asChild>
+            <Button size="icon">
+              <PanelBottom />
+            </Button>
+          </SheetTrigger>
 
-            <SheetContent side="left" className="sm:max-w-xs">
-              <nav className="grid gap-6 text-lg font-medium">
-                <button
-                  onClick={() => onAbaChange("agendamentos")}
-                  className="flex items-center gap-2 p-2 text-base rounded hover:bg-muted"
-                >
-                  <Calendar className="h-5 w-5" />
-                  Agendamentos
-                </button>
+          <SheetContent>
+            <SheetHeader />
+            <SheetTitle />
+            <nav className="flex flex-col gap-4">
+              <button onClick={() => onAbaChange("pendentes")}>
+                Agendamentos
+              </button>
 
-                <button
-                  onClick={() => onAbaChange("historico")}
-                  className="flex items-center gap-2 p-2 text-base rounded hover:bg-muted"
-                >
-                  <History className="h-5 w-5" />
-                  Histórico
-                </button>
+              <button onClick={() => onAbaChange("historico")}>
+                Histórico
+              </button>
 
-                <button
-                  onClick={() => onAbaChange("novo-agendamento")}
-                  className="flex items-center gap-2 p-2 text-base rounded hover:bg-muted"
-                >
-                  <Plus className="h-5 w-5" />
-                  Novo Agendamento
-                </button>
+              <button onClick={() => onAbaChange("novo-agendamento")}>
+                Novo
+              </button>
 
-                <button
-                  onClick={onLogout}
-                  className="flex items-center gap-2 p-2 text-base text-red-500 hover:bg-muted"
-                >
-                  <LogOut className="h-5 w-5" />
-                  Sair
-                </button>
-              </nav>
-            </SheetContent>
-          </Sheet>
-        </header>
+              <button onClick={onLogout} className="text-red-500">
+                Sair
+              </button>
+            </nav>
+          </SheetContent>
+        </Sheet>
       </div>
-    </div>
+    </>
   );
 }
