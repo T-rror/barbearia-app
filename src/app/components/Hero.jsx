@@ -1,10 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
-
 import Saldacao from "./Saldacao";
-
-
-
-
 
 export default function Hero() {
   return (

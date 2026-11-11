@@ -24,7 +24,6 @@ export async function fetchAgendamentos() {
 
 // PATCH: marcar como concluído
 export async function concluirAgendamento(id) {
-  console.log("Concluindo agendamento com ID:", id);
   try {
     const res = await api.patch(`/appointment/${id}/concluir`);
     return res.data;
@@ -36,7 +35,6 @@ export async function concluirAgendamento(id) {
 
 // PATCH: cancelar agendamento
 export async function cancelarAgendamento(id) {
-  console.log("Cancelando agendamento com ID:", id);
   try {
     const res = await api.patch(`/appointment/${id}/cancelar`);
     return res.data;
